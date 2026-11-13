@@ -1,0 +1,19 @@
+{
+  "slug": "gpt-6-astra",
+  "model": "GPT-6 Astra",
+  "modelId": "gpt-6-astra",
+  "vendor": "OpenAI",
+  "harness": "T3 Code / Codex CLI",
+  "date": "2026-11-13",
+  "brief": 1,
+  "game": {
+    "title": "The Moonlight Supper",
+    "tagline": "The market is closed. Your friends are hungry. You are a cat. Make arrangements.",
+    "controls": "WASD / arrows move, Space jump, Shift run, F / click swat, E serve / hold to purr, Q meow, M sound, Escape pause; optional touch controls."
+  },
+  "session": {
+    "humanInterventions": 0,
+    "notes": "Created independently in one session by GPT-6 Astra (high reasoning) in T3 Code through the Codex harness. No subagents, other runs, external art, sound samples or network assets were used. All geometry, animation, signs, sound and music were authored procedurally for this attempt. Playwright 1.64.1 was installed from the local npm cache inside this run because the checkout had no installed dependencies; the existing matching Chromium 1248 was reused. Testing details and limitations are in NOTES.md."
+  },
+  "score": null
+}

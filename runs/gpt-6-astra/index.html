@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="theme-color" content="#142f38"><link rel="icon" href="data:,">
+<title>The Moonlight Supper</title>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"../../vendor/three/build/three.module.js"}}</script>
+</head>
+<body>
+<canvas id="world" aria-label="A three dimensional moonlit market, home to a small orange cat"></canvas>
+<div id="vignette"></div>
+<div id="hud" class="hidden">
+  <header><div class="wordmark">THE MOONLIGHT<br><strong>SUPPER</strong></div><div class="topRight"><span id="bells">♧ 0 / 5</span><button id="sound" title="Toggle audio (M)" aria-label="Toggle audio">♫ ON</button><button id="pause" title="Pause (Escape)">Ⅱ</button></div></header>
+  <div class="quest"><span class="eyebrow" id="chapter">FIRST COURSE</span><h2 id="questTitle">Fish for Miso</h2><p id="questText">Swat the fish counter. Bring supper home.</p><div class="progress"><i id="progress"></i></div><div class="questFoot"><span id="served">0 / 4 served</span><span id="bag">0 / 2 carried</span></div></div>
+  <div id="compass"><span id="arrow">➜</span><span id="destination">FISHMONGER</span><small id="distance"></small></div>
+  <div id="toast" role="status"></div>
+  <div id="prompt"><kbd>F</kbd> Swat the counter</div>
+  <footer><span><kbd>W A S D</kbd> move</span><span><kbd>SPACE</kbd> jump</span><span><kbd>SHIFT</kbd> run</span><span><kbd>F / CLICK</kbd> swat</span><span><kbd>E</kbd> serve / purr</span><span><kbd>Q</kbd> meow</span></footer>
+</div>
+<div id="title" class="screen">
+  <div class="titleCopy"><span class="eyebrow">A LITTLE MISCHIEF. A LOT OF LOVE.</span><h1>The Moonlight<br><em>Supper</em><span class="star">✦</span></h1><p>The market is closed.<br>Your friends are hungry.<br><strong>You are a cat. Make arrangements.</strong></p><button id="start" class="primary">Make a little mischief <span>↗</span></button><button id="new" class="textButton hidden">Start a fresh supper</button><div class="startHint">CLICK OR PRESS ENTER TO BEGIN</div></div>
+  <div class="titleNote"><span>01 — THE NIGHT MARKET</span><p>A small, playable love letter<br>to cats with terrible manners.</p></div>
+</div>
+<div id="modal" class="screen hidden"><div class="modalCard"><span class="eyebrow" id="modalEyebrow"></span><h2 id="modalTitle"></h2><p id="modalText"></p><div id="modalActions"></div></div></div>
+<div id="touch" class="hidden"><div id="stick"><i></i></div><div class="touchActions"><button data-action="KeyE">PURR</button><button data-action="KeyF">SWAT</button><button data-action="Space">JUMP</button></div></div>
+<script type="module" src="game.js"></script>
+</body>
+</html>

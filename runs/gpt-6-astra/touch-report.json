@@ -1,0 +1,15 @@
+{
+  "pass": true,
+  "viewport": "390x844",
+  "tests": [
+    "Tap to start",
+    "Touch controls visible",
+    "Joystick move and release",
+    "Touch jump",
+    "Swat and purr buttons",
+    "Pause and resume",
+    "No horizontal overflow",
+    "No console or request failures"
+  ],
+  "errors": []
+}
