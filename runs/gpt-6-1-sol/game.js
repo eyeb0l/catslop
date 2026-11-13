@@ -10,6 +10,7 @@ const angleTo = (a,b,t) => a + Math.atan2(Math.sin(b-a),Math.cos(b-a))*t;
 let seed=62841;
 function seeded(){seed=(seed*16807)%2147483647;return(seed-1)/2147483646;}
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const touchControls = matchMedia('(max-width:700px), (pointer:coarse)');
 const params = new URLSearchParams(location.search);
 const manual = params.has('debug') && params.has('manual');
 let mode='title', previousMode='play', elapsed=0, worldTime=0, muted=false, quality='full', restartArmed=false;
@@ -50,8 +51,10 @@ function shadow(x,z,r=1.3){const m=new THREE.Mesh(new THREE.PlaneGeometry(r*2,r*
 const platforms=[], obstacles=[];
 function platform(x,z,w,d,h,color='#546d8a'){box(color,x,h/2,z,w,h,d);platforms.push({x,z,w,d,h});}
 function obstacle(x,z,w,d,h,y=0,color='#667b91'){box(color,x,y+h/2,z,w,h,d);obstacles.push({x,z,w,d,h:y+h});}
-function floorAt(x,z,y=100){let h=0;for(const p of [...platforms,...obstacles])if(Math.abs(x-p.x)<p.w/2+.1&&Math.abs(z-p.z)<p.d/2+.1&&p.h<=y+.32)h=Math.max(h,p.h);return h;}
-function solidAt(x,z,y){for(const p of [...obstacles,...platforms])if(Math.abs(x-p.x)<p.w/2+.38&&Math.abs(z-p.z)<p.d/2+.38&&p.h>y+.34)return true;return false;}
+// Keep support and wall footprints aligned so descending an edge cannot leave an overlap.
+const collisionPadding=.38;
+function floorAt(x,z,y=100){let h=0;for(const p of [...platforms,...obstacles])if(Math.abs(x-p.x)<p.w/2+collisionPadding&&Math.abs(z-p.z)<p.d/2+collisionPadding&&p.h<=y+.32)h=Math.max(h,p.h);return h;}
+function solidAt(x,z,y){for(const p of [...obstacles,...platforms])if(Math.abs(x-p.x)<p.w/2+collisionPadding&&Math.abs(z-p.z)<p.d/2+collisionPadding&&p.h>y+.34)return true;return false;}
 // A single walkable rooftop, with a raised north terrace. The parapet is the boundary.
 box('#354d6d',0,-1.31,0,44,2.4,40);box('#536f8d',0,-.08,0,43.5,.16,39.5);
 for(let x=-21;x<=21;x+=2.2)box('#64829b',x,.006,0,.025,.012,39);
@@ -254,6 +257,10 @@ function beginConcert(){mode='concert';concertTime=0;stageGlow.intensity=32;keys
 function finish(){mode='ending';$('ending').hidden=false;$('roam').focus();$('prompt').textContent='';$('end-stats').textContent=`${Math.floor(elapsed/60)}m ${Math.floor(elapsed%60)}s · ${totalFish} fish found · ${purrs} unsolicited meows`;
  const earned=[true,placedFish===fishPlaces.length,potsBroken===8],labels=['Moon choir','Every sardine','Pot liberation'];$('awards').innerHTML=labels.map((l,i)=>`<div class="award ${earned[i]?'won':''}"><b>${earned[i]?'✦':'·'}</b>${l}</div>`).join('');
  $('end-line').textContent=earned.every(Boolean)?'Every fish found. Every pot improved. The city will remember you.':'Five strangers. One spectacularly unqualified band.';
+ saveBest();
+}
+function saveBest(){
+ if(best?.won&&totalFish<=best.fish&&potsBroken<=best.pots)return;
  const record={fish:Math.max(best?.fish||0,totalFish),pots:Math.max(best?.pots||0,potsBroken),won:true};try{localStorage.setItem('midnight-purrade-best',JSON.stringify(record));}catch{}best=record;
 }
 function roam(){if(mode!=='ending')return;mode='roam';$('ending').hidden=true;renderer.domElement.focus();$('mission').style.opacity=1;$('roster').style.opacity=1;$('chapter').textContent='After the applause';$('objective').textContent='The rooftops are yours';$('subgoal').textContent=`Find the remaining fish and flowerpots, or just enjoy being a cat. ${potsBroken}/8 pots pounced.`;}
@@ -338,6 +345,7 @@ function interactions(dt){
  for(const f of fish){if(f.taken)continue;f.root.rotation.y=worldTime*1.5+f.phase;f.root.position.y=f.y+.65+Math.sin(worldTime*2.5+f.phase)*.12;
   if(Math.hypot(f.x-p.x,f.z-p.z)<.9&&Math.abs(p.y-f.y)<1.15){f.taken=true;f.root.visible=false;wallet++;totalFish++;if(!f.bonus)placedFish++;sound('fish');burst(f.x,f.y+.8,f.z,'#f7d581',7,1.7);updateHUD();}
  }
+ if(mode==='roam')saveBest();
  if(mode!=='play'&&mode!=='roam')return;
  const c=nearCat(),singing=keys.has('KeyE')||touchSing;
  let prompt='';
@@ -354,11 +362,11 @@ function interactions(dt){
   if(pot)prompt='<kbd>Space</kbd> Pounce on the pot<small>A perfectly reasonable place to hide a sardine.</small>';
   else if(elapsed<16)prompt='<kbd>W A S D</kbd> wander · <kbd>Space</kbd> pounce<small>Collect the golden sardines. The choir has standards.</small>';
  }
- if(innerWidth<700)prompt=prompt.replaceAll('<kbd>E</kbd>','<kbd>Sing</kbd>').replaceAll('<kbd>Space</kbd>','<kbd>Pounce</kbd>').replaceAll('<kbd>W A S D</kbd> wander · <kbd>Pounce</kbd> pounce','Use the stick to wander · Pounce to jump');
+ if(touchControls.matches)prompt=prompt.replaceAll('<kbd>E</kbd>','<kbd>Sing</kbd>').replaceAll('<kbd>Space</kbd>','<kbd>Pounce</kbd>').replaceAll('<kbd>W A S D</kbd> wander · <kbd>Pounce</kbd> pounce','Use the stick to wander · Pounce to jump');
  if(mode==='play'||mode==='roam')$('prompt').innerHTML=prompt;
 }
 const mapCtx=$('map').getContext('2d');
-function drawMap(){const g=mapCtx,w=184;g.clearRect(0,0,w,w);g.save();g.translate(92,92);g.rotate(-orbit);g.scale(3.7,3.7);g.fillStyle='#627990';g.fillRect(-22,-20,44,40);g.strokeStyle='#b7c7d0';g.lineWidth=.2;g.strokeRect(-22,-20,44,40);g.fillStyle='#8195a4';g.fillRect(-14,-19.1,28,11);g.fillStyle='#d792a2';g.beginPath();g.arc(0,0,3.2,0,TAU);g.fill();
+function drawMap(){const g=mapCtx,w=184;g.clearRect(0,0,w,w);g.save();g.translate(92,92);g.rotate(orbit);g.scale(3.7,3.7);g.fillStyle='#627990';g.fillRect(-22,-20,44,40);g.strokeStyle='#b7c7d0';g.lineWidth=.2;g.strokeRect(-22,-20,44,40);g.fillStyle='#8195a4';g.fillRect(-14,-19.1,28,11);g.fillStyle='#d792a2';g.beginPath();g.arc(0,0,3.2,0,TAU);g.fill();
  for(const f of fish)if(!f.taken){g.fillStyle='#f4cf7c';g.beginPath();g.arc(f.x,f.z,.25,0,TAU);g.fill();}
  for(const c of cats){g.fillStyle=c.joined?'#eab2b7':'#fff1cf';g.beginPath();g.arc(c.cat.root.position.x,c.cat.root.position.z,c.joined?.55:.85,0,TAU);g.fill();if(!c.joined){g.fillStyle='#243950';g.font='1.5px Arial';g.textAlign='center';g.fillText(c.name[0],c.x,c.z+.5);}}
  const p=player.root.position;g.save();g.translate(p.x,p.z);g.rotate(-player.root.rotation.y);g.fillStyle='#f8cf75';g.strokeStyle='#25394e';g.lineWidth=.25;g.beginPath();g.moveTo(0,-1.3);g.lineTo(-.85,1);g.lineTo(.85,1);g.closePath();g.fill();g.stroke();g.restore();g.restore();}

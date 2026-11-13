@@ -33,9 +33,14 @@ NODE_OPTIONS='--import ./runs/gpt-6-1-sol/.tools/register.mjs' npm run shot -- g
 
 # Broader deterministic interaction / collision / optional-medal / mobile / persistence checks:
 NODE_OPTIONS='--import ./runs/gpt-6-1-sol/.tools/register.mjs' npm run shot -- gpt-6-1-sol --query 'debug&manual' --script runs/gpt-6-1-sol/playtest.mjs --out runs/gpt-6-1-sol/shots/playtest.png --wait 300
+
+# PR regression cases, with all screenshots kept outside the checkout:
+CATSLOP_ARTIFACT_DIR=/tmp/catslop-regressions NODE_OPTIONS='--import ./runs/gpt-6-1-sol/.tools/register.mjs' npm run shot -- gpt-6-1-sol --query 'debug&manual' --script runs/gpt-6-1-sol/regressions.mjs --out /tmp/catslop-regressions/out.png --wait 300
 ```
 
 Artifacts are under `runs/gpt-6-1-sol/shots/` and the official report is `check.json`. Open the images before claiming visual verification.
+
+The regression command above writes to `/tmp/catslop-regressions/`. It verifies the actual minimap canvas transform against keyboard movement before and after camera rotation; stopping and escaping at the terrace edge while retaining wall collision; immediate fish/pot best-record writes after the concert, reload persistence and preservation of higher previous records; and portrait-to-landscape resizing at 390 × 844 and 844 × 390 with Chromium touch emulation. The landscape checks use touch drags, Pounce taps and a held Sing invitation, and verify the controls receive input with `elementFromPoint`. Console errors, failed requests and HTTP errors fail the suite. Each additional browser context is closed in `finally`.
 
 `?debug&manual` disables automatic simulation. `window.__game.step(seconds, render=true)` advances the same simulation in 1/60-second increments, avoiding software-GL-dependent key-hold timing. The continuous journey uses actual keyboard movement and E invitations throughout; only its camera is pointed north to make navigation deterministic. The broader test uses test-only placement for travel between individual cases. Neither test can grant fish, recruit a cat, smash a pot or finish the game through the debug API. The API is absent without `?debug`.
 
