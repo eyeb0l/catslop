@@ -1,0 +1,19 @@
+{
+  "slug": "claude-fable-5-2",
+  "model": "Claude Fable 5.2",
+  "modelId": "claude-fable-5-2",
+  "vendor": "Anthropic",
+  "harness": "Claude Code (via T3 Code)",
+  "date": "2026-11-13",
+  "brief": 1,
+  "game": {
+    "title": "Gifts for the Tall One",
+    "tagline": "You are a cat on a small island. The human in the cottage cannot hunt, so you bring it things: butterflies, a sock, its own goldfish.",
+    "controls": "WASD move, mouse look, Space hop (hold to aim a pounce), C sneak, Shift run, E use, J journal, M meow"
+  },
+  "session": {
+    "humanInterventions": 0,
+    "notes": "Not a blind attempt: this model also designed the benchmark and wrote BRIEF.md in the same session, before building the game. One prompt, no human help. Tested only in headless Chromium on software GL; never played by a person or on a real GPU before submission."
+  },
+  "score": null
+}

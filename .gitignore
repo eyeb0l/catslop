@@ -1,0 +1,7 @@
+node_modules/
+.DS_Store
+*.log
+# Scratch output from `npm run shot`; the checker's title.jpg and play.jpg are kept.
+runs/*/shots/*.png
+test-results/
+playwright-report/
