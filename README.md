@@ -16,6 +16,14 @@ npm run serve
 
 Then open <http://127.0.0.1:4173>. Nothing needs installing to play: three.js is vendored and every run is static files.
 
+The server listens on loopback only. To play from another device (the judge wants a real GPU, which a headless server does not have), put a proxy in front of it. On a tailnet:
+
+```sh
+tailscale serve --bg --https=4173 http://127.0.0.1:4173
+```
+
+and open `https://<machine>.<tailnet>.ts.net:4173/`.
+
 ## Test a new model
 
 1. Start a fresh session with the model, in this repository, in whatever coding harness you like.
