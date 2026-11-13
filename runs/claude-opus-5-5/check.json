@@ -1,11 +1,11 @@
 {
   "slug": "claude-opus-5-5",
   "pass": true,
-  "date": "2026-11-13T17:48:08.959Z",
+  "date": "2026-11-13T19:37:53.770Z",
   "brief": 1,
   "renderer": "chromium headless, SwiftShader (software GL) - fps is not comparable to a real GPU",
-  "fps": 8.6,
-  "bytes": 511617,
+  "fps": 7.9,
+  "bytes": 511729,
   "checks": [
     {
       "id": "run-json",
@@ -30,7 +30,7 @@
     {
       "id": "renders",
       "pass": true,
-      "detail": "gameplay frame: luminance stddev 53.0, 252 colours"
+      "detail": "gameplay frame: luminance stddev 53.2, 255 colours"
     },
     {
       "id": "animates",

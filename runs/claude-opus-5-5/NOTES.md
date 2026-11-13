@@ -36,3 +36,10 @@ Press **Enter** or click on the title screen. **WASD** to move and the mouse to 
 - The stress test found one real bug: a fast fall could pass through a counter top in a single physics step and trap the cat inside it. Ground probes now use the previous frame's height, and a rerun was clean.
 - Audio was checked offline with an `OfflineAudioContext`. Every effect and the music render non-silent and below clipping, and I raised the quietest effects (footsteps, swat, jump, chatter) after comparing their levels with the music. That is a level check, not a listening test.
 - Performance: about 300 draw calls and 110k triangles per frame, one 2048 shadow map, static furniture merged per material. An automatic resolution scaler lowers the pixel ratio when frames take longer than 24 ms (settings also offer High and Low). Real-GPU frame rate was not measured.
+
+## Changes after review
+
+Two fixes were made in response to automated PR review, before merge:
+
+- The reverb sends now pass through each category's volume. Before this, setting Music or Sound effects to zero (or turning music off) left that category audible through the reverb. The wet gains are scaled relative to the default volumes, so the mix at default settings is unchanged.
+- P now pauses while pointer lock is held. Before this, it only worked when the mouse was not captured.

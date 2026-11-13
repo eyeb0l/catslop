@@ -883,7 +883,12 @@ function onKey(e) {
     return;
   }
   if (e.code === 'Escape' || (e.code === 'KeyP' && state === 'play')) {
-    if (state === 'play') { if (!pointerLocked) pause(); return; }
+    if (state === 'play') {
+      // Escape releases pointer lock itself and pointerlockchange pauses; P has to do both
+      if (!pointerLocked) pause();
+      else if (e.code === 'KeyP') { pause(); document.exitPointerLock(); }
+      return;
+    }
     if (screen && screen !== 'title' && screen !== 'report') { if (screen === 'pause') resume(); else back(); return; }
   }
   // arrow keys move focus between menu buttons

@@ -4,11 +4,13 @@
 
 const mtof = (m) => 440 * Math.pow(2, (m - 69) / 12);
 const rand = (a, b) => a + Math.random() * (b - a);
+// The reverb sends were tuned at these settings; wet gains are scaled relative to them.
+const DEFAULT_VOL = { music: 0.55, sfx: 0.85 };
 
 export class Sound {
   constructor() {
     this.ctx = null;
-    this.vol = { master: 0.8, music: 0.55, sfx: 0.85 };
+    this.vol = { master: 0.8, ...DEFAULT_VOL };
     this.intensity = 0; // 0..1, pushed by the game (combo, last hour)
     this.ticking = false;
     this.musicOn = true;
@@ -43,6 +45,11 @@ export class Sound {
     this.revSend = c.createGain();
     this.revSend.gain.value = 1;
     this.revSend.connect(this.reverb);
+    // each category's wet signal passes its own volume control on the way to the reverb
+    this.musicWet = c.createGain();
+    this.sfxWet = c.createGain();
+    this.musicWet.connect(this.revSend);
+    this.sfxWet.connect(this.revSend);
 
     const len = c.sampleRate * 2;
     this.noiseBuf = c.createBuffer(1, len, c.sampleRate);
@@ -70,6 +77,8 @@ export class Sound {
     this.master.gain.setTargetAtTime(this.vol.master, t, 0.05);
     this.musicBus.gain.setTargetAtTime(this.musicOn ? this.vol.music * 0.5 : 0, t, 0.3);
     this.sfxBus.gain.setTargetAtTime(this.vol.sfx, t, 0.05);
+    this.musicWet.gain.setTargetAtTime(this.musicOn ? this.vol.music / DEFAULT_VOL.music : 0, t, 0.3);
+    this.sfxWet.gain.setTargetAtTime(this.vol.sfx / DEFAULT_VOL.sfx, t, 0.05);
   }
 
   setMusic(on) {
@@ -96,7 +105,7 @@ export class Sound {
     if (wet > 0) {
       const s = c.createGain();
       s.gain.value = wet;
-      node.connect(s).connect(this.revSend);
+      node.connect(s).connect(bus === this.musicBus ? this.musicWet : this.sfxWet);
     }
     return g;
   }
@@ -518,7 +527,7 @@ export class Sound {
     this.musicOut.connect(lp).connect(this.musicBus);
     const send = c.createGain();
     send.gain.value = 0.35;
-    lp.connect(send).connect(this.revSend);
+    lp.connect(send).connect(this.musicWet);
     this.musicLP = lp;
 
     // F major-ish lounge loop, eight bars.  [root, voicing semitones above C3]
