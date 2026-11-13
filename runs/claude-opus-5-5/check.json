@@ -1,0 +1,59 @@
+{
+  "slug": "claude-opus-5-5",
+  "pass": true,
+  "date": "2026-11-13T17:48:08.959Z",
+  "brief": 1,
+  "renderer": "chromium headless, SwiftShader (software GL) - fps is not comparable to a real GPU",
+  "fps": 8.6,
+  "bytes": 511617,
+  "checks": [
+    {
+      "id": "run-json",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "notes",
+      "pass": true,
+      "detail": "NOTES.md"
+    },
+    {
+      "id": "entry",
+      "pass": true,
+      "detail": "index.html"
+    },
+    {
+      "id": "canvas-3d",
+      "pass": true,
+      "detail": "largest canvas uses webgl2"
+    },
+    {
+      "id": "renders",
+      "pass": true,
+      "detail": "gameplay frame: luminance stddev 53.0, 252 colours"
+    },
+    {
+      "id": "animates",
+      "pass": true,
+      "detail": "two gameplay frames 0.9s apart differ"
+    },
+    {
+      "id": "offline",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "no-failed-requests",
+      "pass": true,
+      "detail": ""
+    },
+    {
+      "id": "no-console-errors",
+      "pass": true,
+      "detail": ""
+    }
+  ],
+  "consoleErrors": [],
+  "failedRequests": [],
+  "externalRequests": []
+}
