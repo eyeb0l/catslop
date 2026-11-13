@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Knock Theory</title>
+<link rel="icon" href="data:,">
+<style>
+  :root {
+    --ink: #3a2934;
+    --ink2: #6d5560;
+    --paper: #fff7ea;
+    --paper2: #f6e9d2;
+    --terra: #d4664a;
+    --terra2: #b9523a;
+    --teal: #2f7f78;
+    --sun: #f2c14e;
+    --shadow: 0 10px 30px rgba(58, 41, 52, 0.28);
+    --font: ui-rounded, "SF Pro Rounded", "Nunito", "Varela Round", "Quicksand", "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #2a2026; font-family: var(--font); color: var(--ink); user-select: none; -webkit-user-select: none; }
+  #game { position: fixed; inset: 0; width: 100%; height: 100%; display: block; outline: none; }
+  #vignette { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(ellipse at center, transparent 55%, rgba(40, 20, 30, 0.35) 100%); }
+  .hidden { display: none !important; }
+  button { font-family: inherit; }
+
+  /* ---------- HUD ---------- */
+  #hud { position: fixed; inset: 0; pointer-events: none; }
+  .chip { background: rgba(255, 247, 234, 0.92); border-radius: 18px; box-shadow: var(--shadow); padding: 10px 16px; }
+  #clock { position: absolute; top: 18px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; min-width: 210px; justify-content: center; }
+  #clock svg { width: 26px; height: 26px; }
+  #clock .bar { position: absolute; left: 16px; right: 16px; bottom: 5px; height: 4px; border-radius: 3px; background: rgba(58, 41, 52, 0.12); overflow: hidden; }
+  #clock .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--sun), var(--terra)); }
+  #clock.late { animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(212, 102, 74, 0.35), var(--shadow); } }
+  #score { position: absolute; top: 18px; right: 18px; text-align: right; min-width: 150px; }
+  #score .label { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink2); font-weight: 800; }
+  #scoreVal { font-size: 34px; font-weight: 900; line-height: 1.05; font-variant-numeric: tabular-nums; }
+  #scoreVal.bump { animation: bump 0.3s ease-out; }
+  @keyframes bump { 30% { transform: scale(1.18); color: var(--terra); } }
+  #combo { font-weight: 900; color: var(--terra); font-size: 18px; height: 22px; transition: opacity 0.3s; }
+  #combo .meter { height: 4px; background: rgba(212, 102, 74, 0.2); border-radius: 3px; overflow: hidden; margin-top: 3px; }
+  #combo .meter i { display: block; height: 100%; background: var(--terra); }
+  #hyp { position: absolute; top: 18px; left: 18px; width: 300px; }
+  #hyp h3 { margin: 0 0 6px; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink2); display: flex; justify-content: space-between; }
+  #hyp ul { list-style: none; margin: 0; padding: 0; }
+  #hyp li { display: flex; gap: 10px; align-items: flex-start; font-weight: 700; font-size: 15px; line-height: 1.25; padding: 6px 0; transition: opacity 0.4s, transform 0.4s; }
+  #hyp li .box { flex: 0 0 18px; height: 18px; border: 2.5px solid var(--ink); border-radius: 6px; margin-top: 1px; position: relative; }
+  #hyp li.done { opacity: 0.55; }
+  #hyp li.done .box { background: var(--teal); border-color: var(--teal); }
+  #hyp li.done .box::after { content: ""; position: absolute; left: 4px; top: 0px; width: 5px; height: 10px; border: solid #fff; border-width: 0 3px 3px 0; transform: rotate(45deg); }
+  #hyp li.done span { text-decoration: line-through; }
+  #hyp li.enter { animation: slidein 0.5s ease-out; }
+  @keyframes slidein { from { opacity: 0; transform: translateX(-20px); } }
+  #hyp .prog { font-size: 12px; color: var(--ink2); font-weight: 700; margin-left: 4px; }
+  #hint { position: absolute; bottom: 34px; left: 50%; transform: translateX(-50%); font-weight: 800; font-size: 18px; text-align: center; transition: opacity 0.4s; white-space: nowrap; }
+  kbd { display: inline-block; min-width: 1.6em; padding: 1px 7px; margin: 0 2px; border-radius: 7px; background: var(--ink); color: var(--paper); font-family: inherit; font-weight: 800; font-size: 0.85em; box-shadow: 0 2px 0 #00000055; text-align: center; }
+  #toasts { position: absolute; top: 92px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .toast { padding: 10px 20px; font-weight: 800; font-size: 18px; text-align: center; animation: toastIn 0.4s cubic-bezier(.2,1.4,.4,1); max-width: 620px; }
+  .toast.big { background: var(--teal); color: #fff; font-size: 22px; }
+  .toast small { display: block; font-size: 14px; opacity: 0.8; font-weight: 700; margin-top: 2px; }
+  .toast.out { animation: toastOut 0.4s forwards; }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(-14px) scale(0.9); } }
+  @keyframes toastOut { to { opacity: 0; transform: translateY(-10px); } }
+  #phone { position: absolute; right: 18px; bottom: 90px; width: 270px; padding: 12px 14px; background: #fdfdfd; border-radius: 18px; box-shadow: var(--shadow); animation: phoneIn 0.5s cubic-bezier(.2,1.3,.4,1); }
+  #phone .who { font-size: 12px; font-weight: 800; color: var(--teal); letter-spacing: 0.08em; text-transform: uppercase; }
+  #phone .msg { margin-top: 4px; background: #e9eef5; padding: 8px 12px; border-radius: 14px 14px 14px 4px; font-weight: 700; }
+  @keyframes phoneIn { from { transform: translateX(120%); } }
+  #pops { position: absolute; inset: 0; overflow: hidden; }
+  .pop { position: absolute; transform: translate(-50%, -50%); text-align: center; font-weight: 900; color: #fff; text-shadow: 0 2px 0 var(--ink), 0 0 10px rgba(58, 41, 52, 0.6); white-space: nowrap; will-change: transform; }
+  .pop b { display: block; font-size: 26px; }
+  .pop small { display: block; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .pop.z { font-size: 22px; color: #fff7ea; }
+  .pop.treat b { color: var(--sun); }
+  #status { position: absolute; bottom: 84px; left: 50%; transform: translateX(-50%); font-weight: 800; font-size: 15px; padding: 6px 14px; display: flex; gap: 8px; align-items: center; }
+  #status .meter { width: 120px; height: 6px; background: rgba(58, 41, 52, 0.15); border-radius: 3px; overflow: hidden; }
+  #status .meter i { display: block; height: 100%; width: 0; background: var(--sun); }
+  #crosshair { position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); display: none; }
+
+  /* ---------- menus ---------- */
+  .screen { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .panel { background: var(--paper); border-radius: 26px; box-shadow: var(--shadow); padding: 28px 32px; max-width: 92vw; max-height: 92vh; overflow: auto; }
+  .btn { display: block; width: 100%; margin: 8px 0; padding: 12px 20px; border: 0; border-radius: 16px; background: var(--paper2); color: var(--ink); font-size: 18px; font-weight: 800; cursor: pointer; text-align: left; transition: transform 0.12s, background 0.12s; position: relative; }
+  .btn:hover, .btn:focus-visible, .btn.sel { background: #fde3c4; transform: translateX(4px); outline: none; }
+  .btn.primary { background: var(--terra); color: #fff; box-shadow: 0 4px 0 var(--terra2); }
+  .btn.primary:hover, .btn.primary:focus-visible { background: #e0714f; }
+  .btn .key { float: right; opacity: 0.7; font-size: 14px; margin-top: 3px; }
+  h2 { margin: 0 0 14px; font-size: 28px; font-weight: 900; }
+  #title { justify-content: flex-start; padding-left: 7vw; background: linear-gradient(90deg, rgba(42, 32, 38, 0.55) 0%, rgba(42, 32, 38, 0.15) 45%, transparent 60%); cursor: pointer; }
+  #title .col { width: 380px; cursor: default; }
+  #logo { font-weight: 900; font-size: 74px; line-height: 0.9; color: var(--paper); letter-spacing: -0.02em; text-shadow: 0 5px 0 var(--terra2), 0 10px 26px rgba(0, 0, 0, 0.35); margin-bottom: 8px; }
+  #logo span { display: inline-block; }
+  #logo .o { color: var(--sun); transform: rotate(-12deg) translateY(4px); }
+  .tag { color: var(--paper); font-weight: 700; font-size: 18px; margin: 0 0 22px; text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5); max-width: 360px; line-height: 1.35; }
+  #title .stats { color: var(--paper); font-weight: 700; font-size: 14px; margin-top: 12px; opacity: 0.9; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6); }
+  .prompt { color: var(--paper); font-weight: 800; margin-top: 18px; opacity: 0.9; animation: blink 1.6s ease-in-out infinite; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6); }
+  @keyframes blink { 50% { opacity: 0.45; } }
+  .controls { display: grid; grid-template-columns: auto 1fr; gap: 9px 16px; align-items: center; font-weight: 700; }
+  .controls div:nth-child(odd) { text-align: right; white-space: nowrap; }
+  .help p { max-width: 520px; line-height: 1.45; margin: 0 0 14px; font-weight: 600; }
+  .row { display: grid; grid-template-columns: 170px 1fr 48px; gap: 12px; align-items: center; margin: 10px 0; font-weight: 800; }
+  .row input[type=range] { width: 100%; accent-color: var(--terra); }
+  .row select { font: inherit; font-weight: 700; padding: 6px 10px; border-radius: 10px; border: 2px solid var(--paper2); background: #fff; color: var(--ink); }
+  .row input[type=checkbox] { width: 22px; height: 22px; accent-color: var(--terra); }
+  .row output { text-align: right; color: var(--ink2); }
+  #wardrobe { justify-content: flex-end; padding-right: 5vw; }
+  #wardrobe .panel { width: 470px; }
+  .treats { display: inline-flex; align-items: center; gap: 6px; font-weight: 900; font-size: 20px; color: var(--terra2); }
+  .treats i { width: 16px; height: 12px; border-radius: 50% 50% 45% 45%; background: #8a5a33; display: inline-block; box-shadow: inset -2px -2px 0 #6a4224; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 8px 0 16px; }
+  .item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; border: 0; background: var(--paper2); font: inherit; font-weight: 800; font-size: 15px; color: var(--ink); cursor: pointer; text-align: left; transition: transform 0.1s; }
+  .item:hover, .item:focus-visible { outline: none; background: #fde3c4; transform: translateY(-2px); }
+  .item.on { box-shadow: inset 0 0 0 3px var(--teal); }
+  .item .sw { width: 28px; height: 28px; border-radius: 50%; flex: 0 0 28px; box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.12); }
+  .item .price { margin-left: auto; font-size: 13px; color: var(--terra2); white-space: nowrap; }
+  .item.locked { opacity: 0.75; }
+  .item.shake { animation: shake 0.35s; }
+  @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  h4 { margin: 6px 0 2px; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink2); }
+  #report .panel { width: 520px; text-align: center; }
+  #report .rank { font-size: 32px; font-weight: 900; color: var(--terra); margin: 4px 0 4px; }
+  #report .quote { font-weight: 700; color: var(--ink2); margin-bottom: 16px; font-style: italic; }
+  #report table { width: 100%; border-collapse: collapse; font-weight: 700; margin-bottom: 14px; }
+  #report td { padding: 5px 4px; border-bottom: 1px dashed rgba(58, 41, 52, 0.18); }
+  #report td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  #report .total { font-size: 40px; font-weight: 900; }
+  #report .btn { text-align: center; }
+  #report .new { color: var(--teal); font-weight: 900; }
+  #pause { background: rgba(42, 32, 38, 0.45); }
+  #pause .panel, #settings .panel, #help .panel { width: 440px; }
+  #settings .panel { width: 560px; }
+  #help .panel { width: 600px; }
+  #endcard { position: fixed; left: 0; right: 0; bottom: 12vh; text-align: center; color: #fff; font-weight: 900; font-size: 40px; text-shadow: 0 3px 0 var(--ink), 0 0 20px rgba(0,0,0,0.5); pointer-events: none; }
+  #endcard small { display: block; font-size: 22px; font-weight: 700; margin-top: 8px; }
+  #fade { position: fixed; inset: 0; background: #2a2026; pointer-events: none; opacity: 1; transition: opacity 0.8s; }
+  #loading { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--paper); font-weight: 800; font-size: 20px; }
+  @media (max-width: 900px) { #hyp { width: 230px; } #hyp li { font-size: 13px; } #logo { font-size: 54px; } #title .col { width: 320px; } }
+</style>
+<script type="importmap">
+{ "imports": { "three": "../../vendor/three/build/three.module.js", "three/addons/": "../../vendor/three/examples/jsm/" } }
+</script>
+</head>
+<body>
+<canvas id="game" tabindex="-1"></canvas>
+<div id="vignette"></div>
+
+<div id="hud" class="hidden">
+  <div id="clock" class="chip">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="#fff" stroke="#3a2934" stroke-width="2.5"/><line id="hHand" x1="12" y1="12" x2="12" y2="7" stroke="#3a2934" stroke-width="2.5" stroke-linecap="round"/><line id="mHand" x1="12" y1="12" x2="12" y2="4.5" stroke="#d4664a" stroke-width="2" stroke-linecap="round"/></svg>
+    <span id="time">9:00 AM</span>
+    <div class="bar"><i id="dayBar"></i></div>
+  </div>
+  <div id="score" class="chip"><div class="label">Science</div><div id="scoreVal">0</div><div id="combo"></div></div>
+  <div id="hyp" class="chip"><h3><span>Today's hypotheses</span><span id="hypCount">0/12</span></h3><ul id="hypList"></ul></div>
+  <div id="status" class="chip hidden"></div>
+  <div id="hint" class="chip hidden"></div>
+  <div id="toasts"></div>
+  <div id="pops"></div>
+  <div id="crosshair"></div>
+</div>
+
+<div id="title" class="screen hidden">
+  <div class="col">
+    <div id="logo"><span>Kn</span><span class="o">o</span><span>ck</span><br><span>The</span><span class="o">o</span><span>ry</span></div>
+    <p class="tag">The Tall One has gone to work. Gravity will not test itself.</p>
+    <button class="btn primary" id="bStart">Start the day <span class="key">Enter</span></button>
+    <button class="btn" id="bWardrobe">Wardrobe</button>
+    <button class="btn" id="bHelp">How to play</button>
+    <button class="btn" id="bSettings">Settings</button>
+    <div class="stats" id="titleStats"></div>
+    <div class="prompt">Press Enter or click anywhere to begin</div>
+  </div>
+</div>
+
+<div id="wardrobe" class="screen hidden">
+  <div class="panel">
+    <h2 style="display:flex;justify-content:space-between;align-items:center">Wardrobe <span class="treats"><i></i><span id="wTreats">0</span></span></h2>
+    <h4>Coat</h4>
+    <div class="grid" id="coatGrid"></div>
+    <h4>Hat</h4>
+    <div class="grid" id="hatGrid"></div>
+    <div style="font-weight:700;color:var(--ink2);font-size:14px;margin-bottom:8px">Treats are earned from your daily science. The treat jar on the fridge is worth checking.</div>
+    <button class="btn" id="bWardrobeBack">Back <span class="key">Esc</span></button>
+  </div>
+</div>
+
+<div id="help" class="screen hidden">
+  <div class="panel help">
+    <h2>How to play</h2>
+    <p>You are a cat. The Tall One has left you alone in the flat from 9:00 until 17:30. Your research question: <b>does gravity still work?</b> Knock things off tables, shelves and counters. Each thing that hits the floor is a confirmed experiment. Higher drops, breakages and quick combos are worth more science.</p>
+    <p>Work through the <b>hypotheses</b> in the top left for big bonuses. Science becomes treats at the end of the day, and treats buy coats and hats.</p>
+    <div class="controls">
+      <div><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div><div>Walk</div>
+      <div>Mouse <span style="opacity:.6">(or drag, or arrow keys)</span></div><div>Look around</div>
+      <div><kbd>Shift</kbd></div><div>Zoomies</div>
+      <div><kbd>C</kbd></div><div>Sneak</div>
+      <div><kbd>Space</kbd></div><div>Jump. Hold it while standing still to wiggle and pounce further.</div>
+      <div>Click / <kbd>F</kbd> / <kbd>E</kbd></div><div>Swat</div>
+      <div><kbd>Q</kbd></div><div>Meow</div>
+      <div>Mouse wheel</div><div>Camera distance</div>
+      <div><kbd>Esc</kbd> / <kbd>P</kbd></div><div>Pause</div>
+    </div>
+    <p style="margin-top:14px">Stand still and the cat will sit, then loaf. Stand still in a sunbeam and it will fall asleep.</p>
+    <button class="btn" id="bHelpBack">Back <span class="key">Esc</span></button>
+  </div>
+</div>
+
+<div id="settings" class="screen hidden">
+  <div class="panel">
+    <h2>Settings</h2>
+    <div class="row"><label for="sMaster">Master volume</label><input type="range" id="sMaster" min="0" max="100"><output id="oMaster"></output></div>
+    <div class="row"><label for="sMusic">Music</label><input type="range" id="sMusic" min="0" max="100"><output id="oMusic"></output></div>
+    <div class="row"><label for="sSfx">Sound effects</label><input type="range" id="sSfx" min="0" max="100"><output id="oSfx"></output></div>
+    <div class="row"><label for="sSens">Mouse sensitivity</label><input type="range" id="sSens" min="20" max="300"><output id="oSens"></output></div>
+    <div class="row"><label for="sInvert">Invert mouse Y</label><input type="checkbox" id="sInvert"><span></span></div>
+    <div class="row"><label for="sDay">Length of a day</label><select id="sDay"><option value="240">Short (4 min)</option><option value="360">Normal (6 min)</option><option value="540">Long (9 min)</option></select><span></span></div>
+    <div class="row"><label for="sQuality">Graphics</label><select id="sQuality"><option value="auto">Auto (adapts)</option><option value="high">High</option><option value="low">Low (fast)</option></select><span></span></div>
+    <div class="row"><label for="sHints">Show hints</label><input type="checkbox" id="sHints"><span></span></div>
+    <button class="btn" id="bResetSave" style="margin-top:14px">Erase saved progress</button>
+    <button class="btn" id="bSettingsBack">Back <span class="key">Esc</span></button>
+  </div>
+</div>
+
+<div id="pause" class="screen hidden">
+  <div class="panel">
+    <h2>Paused</h2>
+    <button class="btn primary" id="bResume">Resume <span class="key">Esc</span></button>
+    <button class="btn" id="bPHelp">How to play</button>
+    <button class="btn" id="bPSettings">Settings</button>
+    <button class="btn" id="bRestart">Restart the day</button>
+    <button class="btn" id="bQuit">Quit to title</button>
+  </div>
+</div>
+
+<div id="report" class="screen hidden">
+  <div class="panel">
+    <div style="font-weight:800;color:var(--ink2);letter-spacing:.12em;text-transform:uppercase;font-size:13px" id="rDay">Day 1 · Research report</div>
+    <div class="total" id="rScore">0</div>
+    <div class="rank" id="rRank"></div>
+    <div class="quote" id="rQuote"></div>
+    <table id="rTable"></table>
+    <button class="btn primary" id="bAgain">Another day <span class="key">Enter</span></button>
+    <button class="btn" id="bRWardrobe">Spend treats in the wardrobe</button>
+    <button class="btn" id="bRTitle">Title screen</button>
+  </div>
+</div>
+
+<div id="endcard" class="hidden"></div>
+<div id="loading">Warming up the sunbeams…</div>
+<div id="fade"></div>
+
+<script type="module" src="./js/main.js"></script>
+</body>
+</html>
