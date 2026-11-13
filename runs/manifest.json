@@ -72,6 +72,36 @@
       }
     },
     {
+      "slug": "gpt-6-1-sol",
+      "model": "GPT-6.1 Sol",
+      "modelId": "gpt-6-1-sol",
+      "vendor": "OpenAI",
+      "harness": "T3 Code / Codex CLI",
+      "date": "2026-11-13",
+      "brief": 1,
+      "game": {
+        "title": "The Midnight Purrade",
+        "tagline": "Be a cat. Gather a rooftop choir. Wake the moon.",
+        "controls": "WASD / arrows move; Space pounce; E hold to invite / tap to meow; Shift scamper; drag to turn the camera; R reset camera; Esc pause; M sound. Touch stick and buttons also supported."
+      },
+      "session": {
+        "humanInterventions": 0,
+        "notes": "Solo attempt in T3 Code using GPT-6.1 Sol at high reasoning effort. No subagents or external assets. Used the frontend-design skill for visual planning. All models, animation, UI, sound and music authored in this session. Pinned Playwright tooling installed inside this run to preserve the brief directory boundary. Only this run was inspected; the repository check regenerates the permitted manifest."
+      },
+      "score": null,
+      "playable": true,
+      "cover": "cover.jpg",
+      "scoreTotal": null,
+      "scoreMax": 40,
+      "check": {
+        "pass": true,
+        "date": "2026-11-13T16:51:13.818Z",
+        "failed": [],
+        "fps": 5,
+        "bytes": 27966764
+      }
+    },
+    {
       "slug": "gpt-6-astra",
       "model": "GPT-6 Astra",
       "modelId": "gpt-6-astra",
