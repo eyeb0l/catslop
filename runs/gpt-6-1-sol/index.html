@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#192944"><title>The Midnight Purrade</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🐈%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">{"imports":{"three":"../../vendor/three/build/three.module.js","three/addons/":"../../vendor/three/examples/jsm/"}}</script>
+</head>
+<body>
+<main id="game" aria-label="The Midnight Purrade, a 3D cat game"></main>
+<div id="vignette"></div>
+<div id="hud" hidden>
+ <div class="topline"><div class="identity">The Midnight Purrade <small>A rooftop rhapsody</small></div><button id="pause" title="Pause (Escape)" aria-label="Pause">Ⅱ</button></div>
+ <div id="mission"><span id="chapter">The gathering</span><h2 id="objective">Find your first singer</h2><p id="subgoal">Follow the little fish. Pip is waiting by the yellow awning.</p></div>
+ <div id="inventory"><span class="fish-icon">◁</span><b id="fish">0</b><span>sardines</span><i></i><b id="choir">0 / 5</b><span>in the choir</span></div>
+ <div id="roster"></div>
+ <div id="toast" role="status"></div>
+ <div id="prompt"></div>
+ <div id="bottom"><div class="keys"><kbd>W A S D</kbd> wander <kbd>Space</kbd> pounce <kbd>E</kbd> sing <kbd>Shift</kbd> scamper</div><button id="sound" aria-label="Toggle sound">♫ Sound on</button></div>
+ <div id="minimap"><canvas id="map" width="184" height="184"></canvas><span>Rooftop map</span></div>
+ <div id="touch"><div id="stick"><i></i></div><div class="touch-actions"><button id="touch-sing">Sing</button><button id="touch-jump">Pounce</button></div></div>
+</div>
+<section id="title" class="overlay">
+ <div class="title-content"><div class="ticket">One night only · Above the sleeping city</div><h1>The Midnight<br><em>Purrade</em><span class="title-star">✦</span></h1><p class="intro">The moon is up.<br>The neighbours are asleep.<br>Your band is absolutely not ready.</p><p class="brief">Be a cat. Find five singers. Make a small, glorious racket.</p><button id="start" class="primary">Let's wake the moon <span>↵</span></button><p class="enter">Press Enter or click anywhere to begin</p><div class="title-controls"><span><kbd>WASD</kbd> Wander</span><span><kbd>Space</kbd> Pounce</span><span><kbd>E</kbd> Sing</span></div><p id="best"></p></div>
+ <div class="edition">A tiny game about a very big night.</div><div class="cat-caption">That's you. A natural born nuisance.</div>
+</section>
+<section id="menu" class="overlay scrim" role="dialog" aria-modal="true" aria-label="Intermission" hidden><div class="paper"><span class="ticket">A little intermission</span><h2>Cat nap?</h2><p>The rooftops can wait.</p><button id="resume" class="primary">Back to the night <span>↵</span></button><button id="mute-menu" class="secondary">♫ Sound on</button><button id="quality" class="secondary">Picture: full</button><p class="help">WASD / arrows: move · Space: pounce<br>Shift: run · E: sing / invite nearby cat<br>Drag the view: turn camera · R: face north<br>Esc: pause · M: sound</p><button id="restart" class="text-button">Start a fresh night</button><p id="restart-note" hidden>Press again to start from the beginning.</p></div></section>
+<section id="ending" class="overlay scrim" role="dialog" aria-modal="true" aria-label="Concert complete" hidden><div class="paper ending-paper"><span class="ticket">The moon gives a standing ovation</span><h2>A perfect<br>little racket.</h2><p id="end-line">Five strangers. One spectacularly unqualified band.</p><div id="awards"></div><p id="end-stats"></p><button id="roam" class="primary">Take a bow, then wander <span>↵</span></button><button id="again" class="secondary">Another night, another noise</button><small>Your best night is saved on this browser.</small></div></section>
+<script type="module" src="game.js"></script>
+</body></html>
