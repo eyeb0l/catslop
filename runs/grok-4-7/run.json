@@ -1,0 +1,19 @@
+{
+  "slug": "grok-4-7",
+  "model": "Grok 4.7",
+  "modelId": "grok-4-7",
+  "vendor": "xAI",
+  "harness": "T3 Code",
+  "date": "2026-11-14",
+  "brief": 1,
+  "game": {
+    "title": "Sunloaf",
+    "tagline": "Arrange the afternoon. Then take the nap.",
+    "controls": "WASD move, mouse look, Shift sneak, Space jump, click pounce, E use, Esc pause"
+  },
+  "session": {
+    "humanInterventions": 0,
+    "notes": "Single session, no human help. Original courtyard game (Miso, six comforts, a saucer shop, an ivy climb, a nap). All models, textures, animation and sound are procedural in this run. three.js r187 is the vendored library only. Verified in headless Chromium with the repo shot script and npm run check; the test machine is software GL, so shadow quality was judged from the code path rather than a discrete GPU."
+  },
+  "score": null
+}
