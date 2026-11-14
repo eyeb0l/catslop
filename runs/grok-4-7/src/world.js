@@ -312,8 +312,8 @@ export function createWorld(scene, renderer, quality) {
   }
   wall(-12.15, 4.6, 0.55, 19.2, LEVEL.wallH, true);
   wall(12.15, 4.6, 0.55, 19.2, LEVEL.wallH, true);
-  wall(-6.6, 14.15, 10.6, 0.5, LEVEL.wallH, true);
-  wall(6.7, 14.15, 10.4, 0.5, LEVEL.wallH, true);
+  wall(-6.35, 14.15, 11.1, 0.5, LEVEL.wallH, true);
+  wall(6.35, 14.15, 11.1, 0.5, LEVEL.wallH, true);
   // Gate
   for (let i = -2; i <= 2; i++) {
     const bar = flag(new THREE.Mesh(new THREE.BoxGeometry(0.06, 1.25, 0.06), mats.woodDark));

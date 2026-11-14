@@ -70,6 +70,7 @@ export function createInput(canvas) {
       right,
       lockFailed,
       locked: Boolean(document.pointerLockElement),
+      tryLock,
     };
     dx = 0;
     dy = 0;

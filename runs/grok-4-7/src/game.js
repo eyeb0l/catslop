@@ -490,7 +490,7 @@ export function createGame({ scene, camera, renderer, audio, quality }) {
     world.patch.position.set(patchX, 0.035, patchZ);
     const inSun = Math.hypot(player.x - patchX, player.z - patchZ) < 1.45;
     const basking = inSun && idle > 0.6 && grounded && !climbing && !swimming && (mode === 'play' || mode === 'title');
-    sunT += dt / LEVEL.dayLength * (basking ? 0.35 : 1);
+    if (mode !== 'pause') sunT += dt / LEVEL.dayLength * (basking ? 0.35 : 1);
     if (basking && (animMode() === 'sit' || animMode() === 'loaf' || animMode() === 'groom' || mode === 'title')) {
       sunBank += dt;
       if (sunBank > 6) {

@@ -1,11 +1,11 @@
 {
   "slug": "grok-4-7",
   "pass": true,
-  "date": "2026-11-14T01:54:34.299Z",
+  "date": "2026-11-14T02:14:55.804Z",
   "brief": 1,
   "renderer": "chromium headless, SwiftShader (software GL) - fps is not comparable to a real GPU",
   "fps": 29.3,
-  "bytes": 261841,
+  "bytes": 260899,
   "checks": [
     {
       "id": "run-json",
@@ -30,7 +30,7 @@
     {
       "id": "renders",
       "pass": true,
-      "detail": "gameplay frame: luminance stddev 54.1, 217 colours"
+      "detail": "gameplay frame: luminance stddev 52.3, 212 colours"
     },
     {
       "id": "animates",
