@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sunloaf</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "../../vendor/three/build/three.module.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="view" width="1280" height="720"></canvas>
+  <div id="ui">
+    <section id="scrim" class="scrim">
+      <div class="title-copy">
+        <p class="eyebrow">Late light, one cat</p>
+        <h1>Sunloaf</h1>
+        <p class="tag">Arrange the afternoon. Then take the nap.</p>
+        <p id="best" class="best" hidden></p>
+      </div>
+      <div class="title-act">
+        <button id="start" type="button">Step into the garden</button>
+        <p class="keys">WASD move · mouse look · Shift sneak · Space jump · click pounce · E use · Esc pause</p>
+      </div>
+    </section>
+
+    <section id="hud" hidden>
+      <p id="objective" class="objective"></p>
+      <p id="prompt" class="prompt"></p>
+      <div class="meters">
+        <span id="motes">0 shiny</span>
+        <span class="sun" aria-hidden="true"><i id="sunbar"></i></span>
+        <span id="pips" class="pips"></span>
+      </div>
+      <p id="hint" class="hint">WASD move · mouse look · Shift sneak · Space jump · click pounce · E use</p>
+    </section>
+
+    <section id="pause" class="panel" hidden>
+      <h2>The afternoon waits</h2>
+      <p class="panel-note">Esc or Enter steps back in. R starts the afternoon over.</p>
+      <label>Volume <input id="volume" type="range" min="0" max="1" step="0.01" value="0.85"></label>
+      <label>Look <input id="sens" type="range" min="0.0008" max="0.006" step="0.0001" value="0.0022"></label>
+      <label class="check"><input id="invert" type="checkbox"> Invert look</label>
+      <label class="check"><input id="shadows" type="checkbox" checked> Soft shadows</label>
+      <p id="shadow-note" class="panel-note" hidden>This machine is drawing the garden simply.</p>
+      <div class="row">
+        <button id="mute" type="button">Mute</button>
+        <button id="resume" type="button">Back to Miso</button>
+        <button id="restart" type="button">Start again</button>
+      </div>
+    </section>
+
+    <section id="shop" class="panel" hidden>
+      <h2>The saucer</h2>
+      <p id="shop-motes" class="panel-note"></p>
+      <div id="wares"></div>
+      <p class="panel-note">1–4 buy. Esc or E leaves the saucer.</p>
+    </section>
+
+    <section id="ending" class="panel ending" hidden>
+      <h2 id="end-title"></h2>
+      <p id="end-body"></p>
+      <p id="end-best" class="panel-note"></p>
+      <div class="row">
+        <button id="stay" type="button">Stay on the sill</button>
+        <button id="again" type="button">Another afternoon</button>
+      </div>
+    </section>
+
+    <pre id="debug" hidden></pre>
+  </div>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
