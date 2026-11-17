@@ -12,6 +12,36 @@
   ],
   "runs": [
     {
+      "slug": "gpt-6-2-sol",
+      "model": "GPT-6.2 Sol",
+      "modelId": "gpt-6-2-sol",
+      "vendor": "OpenAI",
+      "harness": "Codex CLI via T3 Code",
+      "date": "2026-11-17",
+      "brief": 1,
+      "game": {
+        "title": "Lint & Whiskers",
+        "tagline": "Prowl an after-hours laundrette and bring three kittens back to the warm basket.",
+        "controls": "Enter or click to start. WASD or arrows to move, Space to jump, Shift to prowl, F or click to meow, Esc to pause, M for sound. Touch controls are available."
+      },
+      "session": {
+        "humanInterventions": 0,
+        "notes": "Single-session original game. Scenery, cats, animation, textures and sound were authored in code. Play requires only a static server and the repository's vendored Three.js."
+      },
+      "score": null,
+      "playable": true,
+      "cover": "cover.jpg",
+      "scoreTotal": null,
+      "scoreMax": 40,
+      "check": {
+        "pass": true,
+        "date": "2026-11-17T18:55:52.468Z",
+        "failed": [],
+        "fps": 4.1,
+        "bytes": 4656624
+      }
+    },
+    {
       "slug": "grok-4-7",
       "model": "Grok 4.7",
       "modelId": "grok-4-7",

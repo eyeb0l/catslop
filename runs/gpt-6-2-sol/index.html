@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#172e38">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./style.css">
+  <script type="importmap">{"imports":{"three":"../../vendor/three/build/three.module.js","three/addons/":"../../vendor/three/examples/jsm/"}}</script>
+  <title>Lint &amp; Whiskers</title>
+</head>
+<body data-mode="title">
+  <main id="stage" aria-label="Lint and Whiskers game">
+    <div id="view"></div>
+    <div id="shade"></div>
+    <div id="markers" aria-hidden="true"></div>
+    <div id="splash" aria-labelledby="title">
+      <div class="title-inner">
+        <div class="shop"><span></span> Blue Hour Laundrette</div>
+        <h1 id="title">Lint <i>&amp;</i><br>Whiskers</h1>
+        <p>Three kittens are still out in the laundrette.<br>Get them home before your nap gets cold.</p>
+        <button class="primary" id="start">Start the rescue <span class="key">Enter</span></button>
+      </div>
+    </div>
+    <div id="tools">
+      <button id="mute" class="tool" aria-label="Mute sound" title="Sound (M)" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z"/><path class="wave" d="M16 9a4 4 0 0 1 0 6m3-8a7 7 0 0 1 0 10"/><path class="cross" d="m17 10 4 4m0-4-4 4"/></svg>
+      </button>
+      <button id="pause" class="tool" aria-label="Pause" title="Pause (Esc)" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6v12m6-12v12"/></svg>
+      </button>
+    </div>
+    <section id="hud" aria-label="Rescue progress">
+      <div class="ticket">
+        <div class="ticket-top"><span id="ticket-label">Kittens home</span><strong id="kitten-count">0 / 3</strong></div>
+        <div id="portraits"></div>
+        <div class="ticket-bottom"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path fill="currentColor" d="M9 2h7v9c0 1.6-.7 2.3-2.1 3.3l-5.1 3.1a3.6 3.6 0 0 1-3.9-6l4.1-2.6V2z"/><path stroke="#fff4da" d="M9 5h7M9 7h7"/></svg><span>Lost socks</span><strong id="sock-count">0 / 6</strong></div>
+      </div>
+    </section>
+    <div id="guidance">
+      <div id="notice" role="status" aria-live="polite"></div>
+      <div id="hint"></div>
+    </div>
+    <div id="controls">
+      <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Move</span>
+      <span><kbd>Space</kbd> Jump</span>
+      <span><kbd>Shift</kbd> Prowl</span>
+      <span><kbd>F</kbd> Meow <span class="mouse-hint">/ click</span></span>
+    </div>
+    <div id="touch" aria-label="Touch controls">
+      <div id="stick"><div id="knob"></div></div>
+      <div id="touch-actions">
+        <button id="sneak-touch" class="touch-action" aria-pressed="false">Prowl</button>
+        <button id="meow-touch" class="touch-action">Meow</button>
+        <button id="jump-touch" class="touch-action">Jump</button>
+      </div>
+    </div>
+    <section id="pause-panel" class="overlay" aria-labelledby="pause-heading" hidden>
+      <div class="panel">
+        <h2 id="pause-heading">Catnap</h2>
+        <p>The laundrette can wait a moment.</p>
+        <dl><dt>WASD / arrows</dt><dd>Move</dd><dt>Space</dt><dd>Jump</dd><dt>Hold Shift</dt><dd>Prowl quietly</dd><dt>F / left click</dt><dd>Meow</dd><dt>M</dt><dd>Toggle sound</dd></dl>
+        <div class="panel-actions"><button class="primary" id="resume">Resume <span class="key">Esc</span></button><button class="secondary" id="restart">Restart shift</button></div>
+      </div>
+    </section>
+    <section id="ending" class="overlay" aria-labelledby="ending-heading" hidden>
+      <div class="panel">
+        <div class="shop"><span></span> Blue Hour Laundrette</div>
+        <h2 id="ending-heading">All tucked in.</h2>
+        <p>Three kittens, one warm basket. You’ve earned your nap.</p>
+        <div class="receipt"><div><span>Kittens home</span><strong>3 / 3</strong></div><div><span>Lost socks</span><strong id="end-socks"></strong></div><div><span>Rescue time</span><strong id="end-time"></strong></div></div>
+        <div class="panel-actions"><button class="primary" id="continue">Stay and explore</button><button class="secondary" id="replay">Play again</button></div>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
