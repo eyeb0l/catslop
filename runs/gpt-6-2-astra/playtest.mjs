@@ -40,6 +40,7 @@ export default async function play(page, shot) {
   for (let stage = 0; stage < 3; stage++) {
     let s = await read();
     assert.equal(s.stage, stage);
+    let testedReturn = false;
     for (let i = 1; i < s.platforms.length; i++) {
       s = await read();
       let p = s.platforms[i - 1],
@@ -90,6 +91,23 @@ export default async function play(page, shot) {
         assert.equal((await read()).pl, i, 'Return from optional stamp');
       }
       if ((stage === 1 && i === 3) || (stage === 2 && i === 4)) {
+        if (!testedReturn) {
+          await moveAxis('x', n.x - n.w / 2 + 0.48);
+          await key.press('e');
+          assert.ok((await step(0.2)).ferry > 0, 'The ferry has departed');
+          await key.down('a');
+          await key.press('Space');
+          await step(0.83);
+          await key.up('a');
+          await step(0.25);
+          const ashore = await read();
+          assert.equal(ashore.pl, i - 1, 'Back on the departure pier');
+          assert.equal(ashore.home, i - 1, 'The departure pier is the rescue checkpoint');
+          assert.equal((await step(4)).ferry, 0, 'The ferry returns to the departure pier');
+          testedReturn = true;
+          i--; // Board again using the same approach, then finish the crossing.
+          continue;
+        }
         await key.press('e');
         await step(1.3);
         if (stage === 1) await capture('ferry');

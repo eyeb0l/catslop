@@ -426,8 +426,8 @@ function call() {
     refresh();
     return;
   }
-  if (pl?.type === 'ferry' && !pl.go) {
-    pl.go = true;
+  if (pl?.type === 'ferry' && !pl.outbound) {
+    pl.outbound = true;
     $('speech').textContent = 'Mrrring!';
     radio.fx('bell');
     toast('One meow fare. All aboard!', 2.2);
@@ -564,13 +564,15 @@ function simulate(dt) {
             if (contains(p, x, z) && oldY >= top - 0.075 && y <= top + 0.032) {
               pl = home = p;
               lastGround = p.i === -1 ? p.parentIndex : p.i;
+              const next = world.plats[lastGround + 1];
+              if (next?.type === 'ferry') next.outbound = false;
               y = top;
               land = Math.min(1, Math.abs(vy) / 7);
               radio.fx('land');
               if (land > 0.6) burst(x, y + 0.08, z, 5, 0xe6c897, 0.48);
               vy = 0;
               airTime = 0;
-              if (p.type === 'ferry' && !p.go)
+              if (p.type === 'ferry' && !p.outbound)
                 toast(touch() ? 'Tap Meow to ring the ferry bell' : 'Press E to ring the ferry bell', 3);
               break;
             }
@@ -722,7 +724,7 @@ function overlays() {
     l.textContent = 'E · Deliver letter';
     let v = world.resident.root.position;
     screen(l, v.x, v.y + 2.1, v.z);
-  } else if (pl?.type === 'ferry' && !pl.go) {
+  } else if (pl?.type === 'ferry' && !pl.outbound) {
     l.textContent = 'E · Ring ferry bell';
     screen(l, x, y + 2.26, z);
   } else if (next && lastGround === 0 && stage === 0 && x < 3.7) {

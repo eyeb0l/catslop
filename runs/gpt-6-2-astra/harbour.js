@@ -649,7 +649,7 @@ export function makeWorld(scene, stage) {
     bake(g);
     let ripple = waterPrint(all, w, d, i);
     waves.push(ripple);
-    plats.push({ g, type, x, z, w, d, y, dx, dz, fraction: 0, go: false, i });
+    plats.push({ g, type, x, z, w, d, y, dx, dz, fraction: 0, outbound: false, i });
   });
   let spur = null;
   if (cfg.spur) {
@@ -693,7 +693,10 @@ export function makeWorld(scene, stage) {
   function update(t, dt) {
     for (const p of plats) {
       if (p.type === 'pier' || p.type === 'end') continue;
-      if (p.go) p.fraction = Math.min(1, p.fraction + dt * 0.29);
+      if (p.type === 'ferry') {
+        const direction = p.outbound ? 1 : -1;
+        p.fraction = T.MathUtils.clamp(p.fraction + direction * dt * 0.29, 0, 1);
+      }
       let k = p.fraction * p.fraction * (3 - 2 * p.fraction),
         s = t * 1.64 + p.i * 1.64;
       p.g.position.set(
