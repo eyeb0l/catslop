@@ -12,6 +12,36 @@
   ],
   "runs": [
     {
+      "slug": "gpt-6-2-astra",
+      "model": "GPT-6.2 Astra",
+      "modelId": "gpt-6-2-astra",
+      "vendor": "OpenAI",
+      "harness": "Codex CLI via T3 Code",
+      "date": "2026-11-17",
+      "brief": 1,
+      "game": {
+        "title": "Mackerel Mail",
+        "tagline": "A small cat with a very important postbag delivers letters across three fishing harbours.",
+        "controls": "WASD or arrows move, Space pounces, E meows or delivers, Esc pauses, M toggles sound."
+      },
+      "session": {
+        "humanInterventions": 0,
+        "notes": "Solo, single-session run. All geometry, animation, interface art, effects and music were authored in code for this game. Uses the repository's pinned three.js."
+      },
+      "score": null,
+      "playable": true,
+      "cover": "cover.jpg",
+      "scoreTotal": null,
+      "scoreMax": 40,
+      "check": {
+        "pass": true,
+        "date": "2026-11-17T18:53:57.760Z",
+        "failed": [],
+        "fps": 3,
+        "bytes": 2890208
+      }
+    },
+    {
       "slug": "gpt-6-2-sol",
       "model": "GPT-6.2 Sol",
       "modelId": "gpt-6-2-sol",
